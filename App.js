@@ -15,17 +15,24 @@ function HomeScreen({ navigation }) {
   );
 }
 
-function TaskItem({ task, onComplete }) {
+function TaskItem({ task, onComplete, onDelete }) {
   return (
     <View style={styles.taskContainer}>
       <Text style={styles.taskName}>{task.name}</Text>
       <Text style={styles.taskContent}>{task.content}</Text>
       <Text style={styles.taskDueDate}>Due: {task.dueDate}</Text>
-      <Button
-        title={task.completed ? "Completed" : "Complete"}
-        onPress={() => onComplete(task.id)}
-        color={task.completed ? 'green' : 'blue'}
-      />
+      <View style={styles.buttonsContainer}>
+        <Button
+          title={task.completed ? "Completed" : "Complete"}
+          onPress={() => onComplete(task.id)}
+          color={task.completed ? 'green' : 'blue'}
+        />
+        <Button
+          title="Delete"
+          onPress={() => onDelete(task.id)}
+          color="red"
+        />
+      </View>
     </View>
   );
 }
@@ -43,6 +50,10 @@ function ToDoListScreen() {
 
   const completeTask = (id) => {
     setTasks(tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task));
+  };
+
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
   const addTask = () => {
@@ -69,7 +80,7 @@ function ToDoListScreen() {
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TaskItem task={item} onComplete={completeTask} />
+          <TaskItem task={item} onComplete={completeTask} onDelete={deleteTask} />
         )}
       />
       <Button title="Add Task" onPress={() => setModalVisible(true)} />
@@ -158,6 +169,11 @@ const styles = StyleSheet.create({
   taskDueDate: {
     fontSize: 14,
     color: 'gray',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
   modalView: {
     margin: 20,
